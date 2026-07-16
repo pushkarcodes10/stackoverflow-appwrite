@@ -28,6 +28,7 @@ export default async function getOrCreateStorage() {
       console.log("Storage Connected");
     } catch (error) {
       console.error("Error creating storage:", error);
+      throw error;
     }
   }
 }
