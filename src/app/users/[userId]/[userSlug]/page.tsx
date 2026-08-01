@@ -2,6 +2,7 @@ import { databases, users } from "@/src/models/server/config";
 import { UserPrefs } from "@/src/store/Auth";
 import React from "react";
 import { MagicCard, MagicContainer } from "@/src/components/magicui/magic-card";
+import { NeonGradientCard } from "@/src/components/magicui/neon-gradient-card";
 import NumberTicker from "@/src/components/magicui/number-ticker";
 import { answerCollection, db, questionCollection } from "@/src/models/name";
 import { Query } from "node-appwrite";
@@ -21,15 +22,14 @@ const Page = async ({ params }: { params: { userId: string; userSlug: string } }
 
     return (
         <MagicContainer className={"flex h-[500px] w-full flex-col gap-4 lg:h-[250px] lg:flex-row"}>
-            <MagicCard className="flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl">
-                <div className="absolute inset-x-4 top-4">
+            <NeonGradientCard className="max-w-sm items-center justify-center text-center w-full">
+                <div className="flex flex-col items-center justify-center p-8">
                     <h2 className="text-xl font-medium">Reputation</h2>
+                    <p className="z-10 whitespace-nowrap text-4xl font-medium text-gray-800 dark:text-gray-200 mt-4">
+                        <NumberTicker value={user.prefs.reputation} />
+                    </p>
                 </div>
-                <p className="z-10 whitespace-nowrap text-4xl font-medium text-gray-800 dark:text-gray-200">
-                    <NumberTicker value={user.prefs.reputation} />
-                </p>
-                <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
-            </MagicCard>
+            </NeonGradientCard>
             <MagicCard className="flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl">
                 <div className="absolute inset-x-4 top-4">
                     <h2 className="text-xl font-medium">Questions asked</h2>

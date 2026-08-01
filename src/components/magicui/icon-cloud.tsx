@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Cloud, fetchSimpleIcons, ICloud, renderSimpleIcon, SimpleIcon } from "react-icon-cloud";
 
 export const cloudProps: Omit<ICloud, "children"> = {
+    id: "icon-cloud",
     containerProps: {
         style: {
             display: "flex",

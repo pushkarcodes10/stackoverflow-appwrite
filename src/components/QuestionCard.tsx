@@ -6,6 +6,7 @@ import { Models } from "appwrite";
 import slugify from "slugify";
 import { avatars } from "@/src/models/client/config";
 import convertDateToRelativeTime from "@/src/utils/relativeTime";
+import { MagicCard } from "@/src/components/magicui/magic-card";
 
 interface QuestionCardQuestion extends Models.Document {
     totalVotes: number;
@@ -18,8 +19,8 @@ interface QuestionCardQuestion extends Models.Document {
 const QuestionCard = ({ ques }: { ques: QuestionCardQuestion }) => {
 
     return (
-        <div
-            className="relative flex flex-col gap-4 overflow-hidden rounded-xl border border-white/20 bg-white/5 p-4 duration-200 hover:bg-white/10 sm:flex-row"
+        <MagicCard
+            className="relative flex w-full cursor-pointer flex-col gap-4 overflow-hidden rounded-xl border border-white/20 bg-white/5 p-4 duration-200 hover:bg-white/10 sm:flex-row"
         >
             <div className="relative shrink-0 text-sm sm:text-right">
                 <p>{ques.totalVotes} votes</p>
@@ -61,7 +62,7 @@ const QuestionCard = ({ ques }: { ques: QuestionCardQuestion }) => {
                     <span>asked {convertDateToRelativeTime(ques.$createdAt)}</span>
                 </div>
             </div>
-        </div>
+        </MagicCard>
     );
 };
 

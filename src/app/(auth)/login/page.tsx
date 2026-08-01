@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
+import ShineBorder from "@/src/components/magicui/shine-border";
+import { BorderBeam } from "@/src/components/magicui/border-beam";
 
 
 const BottomGradient = () => {
@@ -55,7 +57,11 @@ export default function LoginPage ()  {
     setLoading(() => false);
   };
   return (
-    <div className="mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
+    <ShineBorder
+      className="relative mx-auto w-full max-w-md overflow-hidden rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8"
+      color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+    >
+      <BorderBeam size={250} duration={12} delay={9} />
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Login to Riverflow
       </h2>
@@ -131,6 +137,6 @@ export default function LoginPage ()  {
           </button>
         </div>
       </form>
-    </div>
+    </ShineBorder>
   );
 }

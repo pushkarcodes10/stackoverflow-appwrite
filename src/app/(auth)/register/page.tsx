@@ -5,9 +5,10 @@ import { error } from 'console';
 import React from 'react'
 import Link from 'next/link';
 import { Label } from "@/src/components/ui/label";
-import { Input } from '@base-ui/react/input';
+import { Input } from "@/src/components/ui/input";
 import { cn } from '@/lib/utils';
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
+import { BorderBeam } from "@/src/components/magicui/border-beam";
 
 
 const BottomGradient = () => {
@@ -77,7 +78,8 @@ export default function RegisterPage () {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
+    <div className="relative overflow-hidden mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
+      <BorderBeam size={250} duration={12} delay={9} />
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Welcome to Riverflow
       </h2>

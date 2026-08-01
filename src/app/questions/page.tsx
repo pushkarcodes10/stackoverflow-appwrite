@@ -8,6 +8,8 @@ import QuestionCard from "@/src/components/QuestionCard";
 import { UserPrefs } from "@/src/store/Auth";
 import Pagination from "@/src/components/Pagination";
 import Search from "./Search";
+import NumberTicker from "@/src/components/magicui/number-ticker";
+import { AnimatedList } from "@/src/components/magicui/animated-list";
 
 const Page = async ({
     searchParams,
@@ -79,13 +81,13 @@ const Page = async ({
                 <Search />
             </div>
             <div className="mb-4">
-                <p>{questions.total} questions</p>
+                <p><NumberTicker value={questions.total} /> questions</p>
             </div>
-            <div className="mb-4 max-w-3xl space-y-6">
+            <AnimatedList className="mb-4 max-w-3xl space-y-6">
                 {questions.documents.map((ques: any) => (
                     <QuestionCard key={ques.$id} ques={ques} />
                 ))}
-            </div>
+            </AnimatedList>
             <Pagination total={questions.total} limit={25} />
         </div>
     );

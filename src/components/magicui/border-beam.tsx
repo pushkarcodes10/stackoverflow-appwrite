@@ -1,4 +1,6 @@
-import { cn } from "@/utils/cn";
+"use client";
+
+import { cn } from "@/lib/utils";
 
 interface BorderBeamProps {
     className?: string;
@@ -35,7 +37,7 @@ export const BorderBeam = ({
                 } as React.CSSProperties
             }
             className={cn(
-                "absolute inset-[0] rounded-[inherit] [border:calc(var(--border-width)*1px)_solid_transparent]",
+                "pointer-events-none absolute inset-[0] rounded-[inherit] [border:calc(var(--border-width)*1px)_solid_transparent]",
 
                 // mask styles
                 "![mask-clip:padding-box,border-box] ![mask-composite:intersect] [mask:linear-gradient(transparent,transparent),linear-gradient(white,white)]",

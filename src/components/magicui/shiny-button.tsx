@@ -1,5 +1,5 @@
 "use client";
-import { type AnimationProps, motion } from "framer-motion";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
 const animationProps = {
     initial: { "--x": "100%", scale: 0.8 },
@@ -20,7 +20,7 @@ const animationProps = {
             mass: 0.5,
         },
     },
-} as AnimationProps;
+} as HTMLMotionProps<"button">;
 
 const ShinyButton = ({ text = "shiny-button" }) => {
     return (
