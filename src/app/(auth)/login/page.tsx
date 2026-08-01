@@ -4,8 +4,8 @@ import { useAuthStore } from "@/src/store/Auth";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/components/ui/input";
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
 
 

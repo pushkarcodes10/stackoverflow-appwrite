@@ -4,7 +4,7 @@ import { useAuthStore } from '@/src/store/Auth'
 import { error } from 'console';
 import React from 'react'
 import Link from 'next/link';
-import { Label } from '@/components/ui/label';
+import { Label } from "@/src/components/ui/label";
 import { Input } from '@base-ui/react/input';
 import { cn } from '@/lib/utils';
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
