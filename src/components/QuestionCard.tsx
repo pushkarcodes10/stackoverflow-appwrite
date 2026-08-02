@@ -8,7 +8,7 @@ import { avatars } from "@/src/models/client/config";
 import convertDateToRelativeTime from "@/src/utils/relativeTime";
 import { MagicCard } from "@/src/components/magicui/magic-card";
 
-interface QuestionCardQuestion extends Models.Document {
+export interface QuestionCardQuestion extends Models.Document {
     totalVotes: number;
     totalAnswers: number;
     title: string;
