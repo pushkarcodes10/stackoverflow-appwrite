@@ -63,6 +63,9 @@ export const useAuthStore = create<IAuthStore>()(
 
       async login(email: string, password: string) {
         try {
+          try {
+            await account.deleteSession("current");
+          } catch (error) {}
           const session = await account.createEmailPasswordSession(email, password)
           const [user, {jwt}] = await Promise.all([
             account.get<UserPrefs>(),
@@ -104,11 +107,11 @@ export const useAuthStore = create<IAuthStore>()(
 
       async logout() {
         try {
-          await account.deleteSessions()
-          set({session: null, jwt: null, user: null})
-          
+          await account.deleteSession("current");
         } catch (error) {
-          console.log(error)
+          console.log(error);
+        } finally {
+          set({ session: null, jwt: null, user: null });
         }
       },
     })),

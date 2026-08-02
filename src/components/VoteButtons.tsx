@@ -50,8 +50,21 @@ const VoteButtons = ({
 
     const toggleUpvote = async () => {
         if (!user) return router.push("/login");
-
         if (votedDocument === undefined) return;
+
+        const prevVoteResult = voteResult;
+        const prevVotedDocument = votedDocument;
+
+        if (votedDocument && votedDocument.voteStatus === "upvoted") {
+            setVoteResult(prev => prev - 1);
+            setVotedDocument(null);
+        } else if (votedDocument && votedDocument.voteStatus === "downvoted") {
+            setVoteResult(prev => prev + 2);
+            setVotedDocument({ ...votedDocument, voteStatus: "upvoted" } as any);
+        } else {
+            setVoteResult(prev => prev + 1);
+            setVotedDocument({ voteStatus: "upvoted" } as any);
+        }
 
         try {
             const response = await fetch(`/api/vote`, {
@@ -65,20 +78,34 @@ const VoteButtons = ({
             });
 
             const data = await response.json();
-
             if (!response.ok) throw data;
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
         } catch (error: any) {
+            setVoteResult(prevVoteResult);
+            setVotedDocument(prevVotedDocument);
             window.alert(error?.message || "Something went wrong");
         }
     };
 
     const toggleDownvote = async () => {
         if (!user) return router.push("/login");
-
         if (votedDocument === undefined) return;
+
+        const prevVoteResult = voteResult;
+        const prevVotedDocument = votedDocument;
+
+        if (votedDocument && votedDocument.voteStatus === "downvoted") {
+            setVoteResult(prev => prev + 1);
+            setVotedDocument(null);
+        } else if (votedDocument && votedDocument.voteStatus === "upvoted") {
+            setVoteResult(prev => prev - 2);
+            setVotedDocument({ ...votedDocument, voteStatus: "downvoted" } as any);
+        } else {
+            setVoteResult(prev => prev - 1);
+            setVotedDocument({ voteStatus: "downvoted" } as any);
+        }
 
         try {
             const response = await fetch(`/api/vote`, {
@@ -92,12 +119,13 @@ const VoteButtons = ({
             });
 
             const data = await response.json();
-
             if (!response.ok) throw data;
 
             setVoteResult(() => data.data.voteResult);
             setVotedDocument(() => data.data.document);
         } catch (error: any) {
+            setVoteResult(prevVoteResult);
+            setVotedDocument(prevVotedDocument);
             window.alert(error?.message || "Something went wrong");
         }
     };

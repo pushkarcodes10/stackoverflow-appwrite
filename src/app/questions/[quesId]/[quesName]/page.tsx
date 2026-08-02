@@ -26,28 +26,29 @@ import DeleteQuestion from "./DeleteQuestion";
 import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/src/components/ui/tracing-beam";
 
-const Page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
+const Page = async ({ params }: { params: Promise<{ quesId: string; quesName: string }> }) => {
+    const { quesId, quesName } = await params;
     const [question, answers, upvotes, downvotes, comments] = await Promise.all([
-        databases.getDocument(db, questionCollection, params.quesId),
+        databases.getDocument(db, questionCollection, quesId),
         databases.listDocuments(db, answerCollection, [
             Query.orderDesc("$createdAt"),
-            Query.equal("questionId", params.quesId),
+            Query.equal("questionId", quesId),
         ]),
         databases.listDocuments(db, voteCollection, [
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.equal("type", "question"),
             Query.equal("voteStatus", "upvoted"),
             Query.limit(1), // for optimization
         ]),
         databases.listDocuments(db, voteCollection, [
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.equal("type", "question"),
             Query.equal("voteStatus", "downvoted"),
             Query.limit(1), // for optimization
         ]),
         databases.listDocuments(db, commentCollection, [
             Query.equal("type", "question"),
-            Query.equal("typeId", params.quesId),
+            Query.equal("typeId", quesId),
             Query.orderDesc("$createdAt"),
         ]),
     ]);
@@ -141,7 +142,7 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                             <span>Votes {upvotes.total + downvotes.total}</span>
                         </div>
                     </div>
-                    <Link href="/questions/ask" className="ml-auto inline-block shrink-0">
+                    <Link href="/ask" className="ml-auto inline-block shrink-0">
                         <ShimmerButton className="shadow-2xl">
                             <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
                                 Ask a question
@@ -156,8 +157,8 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                             type="question"
                             id={question.$id}
                             className="w-full"
-                            upvotes={upvotes}
-                            downvotes={downvotes}
+                            upvotes={JSON.parse(JSON.stringify(upvotes))}
+                            downvotes={JSON.parse(JSON.stringify(downvotes))}
                         />
                         <EditQuestion
                             questionId={question.$id}
@@ -168,18 +169,20 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                     </div>
                     <div className="w-full overflow-auto">
                         <MarkdownPreview className="rounded-xl p-4" source={question.content} />
-                        <picture>
-                            <img
-                                src={
-                                    storage.getFilePreview(
-                                        questionAttachmentBucket,
-                                        question.attachmentId
-                                    )
-                                }
-                                alt={question.title}
-                                className="mt-3 rounded-lg"
-                            />
-                        </picture>
+                        {question.attachmentId && (
+                            <picture>
+                                <img
+                                    src={
+                                        storage.getFilePreview(
+                                            questionAttachmentBucket,
+                                            question.attachmentId
+                                        ).href
+                                    }
+                                    alt={question.title}
+                                    className="mt-3 rounded-lg"
+                                />
+                            </picture>
+                        )}
                         <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
                             {question.tags.map((tag: string) => (
                                 <Link
@@ -212,7 +215,7 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                             </div>
                         </div>
                         <Comments
-                            comments={comments as any}
+                            comments={JSON.parse(JSON.stringify(comments))}
                             className="mt-4"
                             type="question"
                             typeId={question.$id}
@@ -220,7 +223,7 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                         <hr className="my-4 border-white/40" />
                     </div>
                 </div>
-                <Answers answers={answers as any} questionId={question.$id} />
+                <Answers answers={JSON.parse(JSON.stringify(answers))} questionId={question.$id} />
             </div>
         </TracingBeam>
     );

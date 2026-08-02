@@ -10,6 +10,8 @@ import Pagination from "@/src/components/Pagination";
 import Search from "./Search";
 import NumberTicker from "@/src/components/magicui/number-ticker";
 import { AnimatedList } from "@/src/components/magicui/animated-list";
+import Header from "@/src/app/components/Header";
+import Footer from "@/src/app/components/Footer";
 
 const Page = async ({
     searchParams,
@@ -67,9 +69,10 @@ const Page = async ({
 
     return (
         <div className="container mx-auto px-4 pb-20 pt-36">
+            <Header />
             <div className="mb-10 flex items-center justify-between">
                 <h1 className="text-3xl font-bold">All Questions</h1>
-                <Link href="/questions/ask">
+                <Link href="/ask">
                     <ShimmerButton className="shadow-2xl">
                         <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
                             Ask a question
@@ -85,10 +88,11 @@ const Page = async ({
             </div>
             <AnimatedList className="mb-4 max-w-3xl space-y-6">
                 {questions.documents.map((ques: any) => (
-                    <QuestionCard key={ques.$id} ques={ques} />
+                    <QuestionCard key={ques.$id} ques={JSON.parse(JSON.stringify(ques))} />
                 ))}
             </AnimatedList>
             <Pagination total={questions.total} limit={25} />
+            <Footer />
         </div>
     );
 };

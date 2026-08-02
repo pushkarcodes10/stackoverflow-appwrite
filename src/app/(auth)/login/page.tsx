@@ -2,6 +2,7 @@
 
 import { useAuthStore } from "@/src/store/Auth";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Label } from "@/src/components/ui/label";
@@ -34,6 +35,7 @@ export default function LoginPage ()  {
   const { login } = useAuthStore();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,6 +55,8 @@ export default function LoginPage ()  {
 
     if (loginResponse.error) {
       setError(() => loginResponse.error!.message);
+    } else {
+      router.push("/questions");
     }
     setLoading(() => false);
   };
@@ -83,7 +87,7 @@ export default function LoginPage ()  {
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input
-            className="text-black"
+            className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
             id="email"
             name="email"
             placeholder="projectmayhem@fc.com"
@@ -93,7 +97,7 @@ export default function LoginPage ()  {
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
           <Input
-            className="text-black"
+            className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
             id="password"
             name="password"
             placeholder="••••••••"

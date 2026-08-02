@@ -10,15 +10,17 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string; userSlug: string };
-    searchParams: { page?: string };
+    params: Promise<{ userId: string; userSlug: string }>;
+    searchParams: Promise<{ page?: string }>;
 }) => {
-    searchParams.page ||= "1";
+    const sp = await searchParams;
+    const { userId } = await params;
+    sp.page ||= "1";
 
     const queries = [
-        Query.equal("authorId", params.userId),
+        Query.equal("authorId", userId),
         Query.orderDesc("$createdAt"),
-        Query.offset((+searchParams.page - 1) * 25),
+        Query.offset((+sp.page - 1) * 25),
         Query.limit(25),
     ];
 
@@ -59,7 +61,7 @@ const Page = async ({
             </div>
             <div className="mb-4 max-w-3xl space-y-6">
                 {questions.documents.map(ques => (
-                    <QuestionCard key={ques.$id} ques={ques as any} />
+                    <QuestionCard key={ques.$id} ques={JSON.parse(JSON.stringify(ques))} />
                 ))}
             </div>
             <Pagination total={questions.total} limit={25} />

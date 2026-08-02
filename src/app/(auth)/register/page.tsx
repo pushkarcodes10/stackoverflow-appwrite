@@ -1,9 +1,9 @@
 "use client"
 
 import { useAuthStore } from '@/src/store/Auth'
-import { error } from 'console';
 import React from 'react'
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
 import { cn } from '@/lib/utils';
@@ -39,6 +39,7 @@ export default function RegisterPage () {
   const { login, createAccount } = useAuthStore();
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,6 +72,8 @@ export default function RegisterPage () {
       const loginResponse = await login(email.toString(), password.toString());
       if (loginResponse.error) {
         setError(() => loginResponse.error!.message);
+      } else {
+        router.push("/questions");
       }
     }
 
@@ -102,7 +105,7 @@ export default function RegisterPage () {
           <LabelInputContainer>
             <Label htmlFor="firstname">First name</Label>
             <Input
-              className="text-black"
+              className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
               id="firstname"
               name="firstname"
               placeholder="Tyler"
@@ -112,7 +115,7 @@ export default function RegisterPage () {
           <LabelInputContainer>
             <Label htmlFor="lastname">Last name</Label>
             <Input
-              className="text-black"
+              className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
               id="lastname"
               name="lastname"
               placeholder="Durden"
@@ -123,7 +126,7 @@ export default function RegisterPage () {
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input
-            className="text-black"
+            className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
             id="email"
             name="email"
             placeholder="projectmayhem@fc.com"
@@ -133,7 +136,7 @@ export default function RegisterPage () {
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
           <Input
-            className="text-black"
+            className="bg-gray-50 dark:bg-zinc-800 text-black dark:text-white"
             id="password"
             name="password"
             placeholder="••••••••"
