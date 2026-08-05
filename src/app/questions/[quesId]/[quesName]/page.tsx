@@ -176,7 +176,7 @@ const Page = async ({ params }: { params: Promise<{ quesId: string; quesName: st
                                         storage.getFilePreview(
                                             questionAttachmentBucket,
                                             question.attachmentId
-                                        ).href
+                                        )
                                     }
                                     alt={question.title}
                                     className="mt-3 rounded-lg"
