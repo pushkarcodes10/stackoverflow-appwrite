@@ -36,36 +36,47 @@ const Page = async ({
             ])
         );
 
-    const questions = await databases.listDocuments(db, questionCollection, queries);
-    console.log("Questions", questions)
+    let questions;
 
-    questions.documents = await Promise.all(
-        questions.documents.map(async (ques: any) => {
-            const [author, answers, votes] = await Promise.all([
-                users.get<UserPrefs>(ques.authorId),
-                databases.listDocuments(db, answerCollection, [
-                    Query.equal("questionId", ques.$id),
-                    Query.limit(1), // for optimization
-                ]),
-                databases.listDocuments(db, voteCollection, [
-                    Query.equal("type", "question"),
-                    Query.equal("typeId", ques.$id),
-                    Query.limit(1), // for optimization
-                ]),
-            ]);
+    try {
+        questions = await databases.listDocuments(db, questionCollection, queries);
+    } catch (error) {
+        console.error("Failed to load questions", error);
+        questions = { total: 0, documents: [] };
+    }
 
-            return {
-                ...ques,
-                totalAnswers: answers.total,
-                totalVotes: votes.total,
-                author: {
-                    $id: author.$id,
-                    reputation: author.prefs.reputation,
-                    name: author.name,
-                },
-            };
-        })
-    );
+    try {
+        questions.documents = await Promise.all(
+            questions.documents.map(async (ques: any) => {
+                const [author, answers, votes] = await Promise.all([
+                    users.get<UserPrefs>(ques.authorId),
+                    databases.listDocuments(db, answerCollection, [
+                        Query.equal("questionId", ques.$id),
+                        Query.limit(1),
+                    ]),
+                    databases.listDocuments(db, voteCollection, [
+                        Query.equal("type", "question"),
+                        Query.equal("typeId", ques.$id),
+                        Query.limit(1),
+                    ]),
+                ]);
+
+                return {
+                    ...ques,
+                    totalAnswers: answers.total,
+                    totalVotes: votes.total,
+                    author: {
+                        $id: author.$id,
+                        reputation: author.prefs.reputation,
+                        name: author.name,
+                    },
+                };
+            })
+        );
+    } catch (error) {
+        console.error("Failed to enrich question data", error);
+        questions.documents = [];
+    }
 
     return (
         <div className="container mx-auto px-4 pb-20 pt-36">
@@ -86,11 +97,17 @@ const Page = async ({
             <div className="mb-4">
                 <p><NumberTicker value={questions.total} /> questions</p>
             </div>
-            <AnimatedList className="mb-4 max-w-3xl space-y-6">
-                {questions.documents.map((ques: any) => (
-                    <QuestionCard key={ques.$id} ques={JSON.parse(JSON.stringify(ques))} />
-                ))}
-            </AnimatedList>
+            {questions.documents.length === 0 ? (
+                <div className="max-w-3xl rounded-xl border border-dashed border-white/20 bg-white/5 p-6 text-center text-sm text-slate-300">
+                    We couldn&apos;t load the questions right now. Please try again in a moment.
+                </div>
+            ) : (
+                <AnimatedList className="mb-4 max-w-3xl space-y-6">
+                    {questions.documents.map((ques: any) => (
+                        <QuestionCard key={ques.$id} ques={JSON.parse(JSON.stringify(ques))} />
+                    ))}
+                </AnimatedList>
+            )}
             <Pagination total={questions.total} limit={25} />
             <Footer />
         </div>
