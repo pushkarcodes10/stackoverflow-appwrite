@@ -7,8 +7,9 @@ import { useRouter } from "next/navigation";
 import Header from "@/src/app/components/Header";
 
 export default function AskPage() {
-  const { session, hydrated, verfiySession } = useAuthStore();
+  const { session, user, hydrated, verfiySession } = useAuthStore();
   const router = useRouter();
+  const isAuthenticated = Boolean(session || user);
 
   React.useEffect(() => {
     if (!hydrated) {
@@ -16,12 +17,12 @@ export default function AskPage() {
       return;
     }
 
-    if (!session) {
+    if (!isAuthenticated) {
       router.replace("/login");
     }
-  }, [hydrated, router, session, verfiySession]);
+  }, [hydrated, isAuthenticated, router, verfiySession]);
 
-  if (!hydrated || !session) return null;
+  if (!hydrated || !isAuthenticated) return null;
 
   return (
     <div className="container mx-auto px-4 pb-12 pt-24 max-w-4xl">

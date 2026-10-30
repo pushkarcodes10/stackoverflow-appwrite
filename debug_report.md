@@ -52,3 +52,8 @@
 - **File:** src/app/(auth)/layout.tsx, src/store/Auth.ts, src/app/ask/page.tsx
 - **Root Cause:** The auth layout redirected authenticated users to `/` instead of `/questions`, and the store never refreshed the live Appwrite session on mount. That allowed logged-in users to reach the auth screens and caused protected routes to fall back to the login flow even after a successful sign-in.
 - **Solution Applied:** Fixed the redirect target to `/questions`, added a session refresh on auth/protected screens, and marked the auth store as hydrated after verifying the current Appwrite session so protected pages keep the user authenticated instead of sending them back to login.
+
+## [Issue 12]: Auth gating only checked `session`, which dropped users when Appwrite hydration was asynchronous
+- **File:** src/app/(auth)/layout.tsx, src/app/ask/page.tsx, src/app/(auth)/login/page.tsx, src/app/(auth)/register/page.tsx
+- **Root Cause:** The route guards were treating `session` as the only truth for authentication. After login, the user object or rehydrated session could exist at different times than the raw session object, so `!session` could briefly become true and bounce the user back to `/login` before the app had re-established auth state.
+- **Solution Applied:** The route checks now use `session || user` as the canonical authenticated state, and login/register redirects use `router.replace(...)` to avoid leaving the user on a stale auth page while hydration resolves.

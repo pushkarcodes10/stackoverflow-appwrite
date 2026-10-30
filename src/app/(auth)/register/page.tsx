@@ -73,7 +73,7 @@ export default function RegisterPage () {
       if (loginResponse.error) {
         setError(() => loginResponse.error!.message);
       } else {
-        router.push("/questions");
+        router.replace("/questions");
       }
     }
 

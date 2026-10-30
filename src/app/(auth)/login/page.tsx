@@ -56,7 +56,7 @@ export default function LoginPage ()  {
     if (loginResponse.error) {
       setError(() => loginResponse.error!.message);
     } else {
-      router.push("/questions");
+      router.replace("/questions");
     }
     setLoading(() => false);
   };
