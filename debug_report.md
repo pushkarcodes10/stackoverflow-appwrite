@@ -47,3 +47,8 @@
 - **File:** src/app/api/answer/route.ts
 - **Root Cause:** The route handlers read `.message`, `.status`, and `.code` directly from `any` values, which violated the lint rule and obscured the real error contract when Appwrite threw a different object shape.
 - **Solution Applied:** Replaced `catch (error: any)` with an `unknown` gate that validates the object shape before extracting message/status information and uses safe fallbacks for all failures.
+
+## [Issue 11]: Auth guard redirected signed-in users to the wrong route and left session state unhydrated
+- **File:** src/app/(auth)/layout.tsx, src/store/Auth.ts, src/app/ask/page.tsx
+- **Root Cause:** The auth layout redirected authenticated users to `/` instead of `/questions`, and the store never refreshed the live Appwrite session on mount. That allowed logged-in users to reach the auth screens and caused protected routes to fall back to the login flow even after a successful sign-in.
+- **Solution Applied:** Fixed the redirect target to `/questions`, added a session refresh on auth/protected screens, and marked the auth store as hydrated after verifying the current Appwrite session so protected pages keep the user authenticated instead of sending them back to login.

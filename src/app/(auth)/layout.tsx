@@ -8,17 +8,22 @@ import AnimatedGridPattern from "@/src/components/magicui/animated-grid-pattern"
 import { cn } from "@/lib/utils";
 
 const Layout = ({children} : {children: React.ReactNode}) => {
-    const {session} = useAuthStore()
-    const router = useRouter()
+    const { session, hydrated, verfiySession } = useAuthStore();
+    const router = useRouter();
 
     React.useEffect(() => {
-        if (session) {
-            router.push('/')
+        if (!hydrated) {
+            void verfiySession();
+            return;
         }
-    }, [session, router])
 
-    if (session) {
-        return null
+        if (session) {
+            router.replace('/questions');
+        }
+    }, [hydrated, router, session, verfiySession]);
+
+    if (!hydrated || session) {
+        return null;
     }
 
     return (

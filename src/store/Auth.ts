@@ -53,11 +53,16 @@ export const useAuthStore = create<IAuthStore>()(
 
       async verfiySession() {
         try {
-          const session = await account.getSession("current")
-          set({session})
+          const session = await account.getSession("current");
+          const [user, { jwt }] = await Promise.all([
+            account.get<UserPrefs>(),
+            account.createJWT(),
+          ]);
 
+          set({ session, user, jwt, hydrated: true });
         } catch (error) {
-          console.log(error)
+          console.log(error);
+          set({ session: null, user: null, jwt: null, hydrated: true });
         }
       },
 
@@ -76,7 +81,7 @@ export const useAuthStore = create<IAuthStore>()(
             reputation: 0
           })
 
-          set({session, user, jwt})
+          set({session, user, jwt, hydrated: true})
           
           return { success: true}
 
@@ -111,7 +116,7 @@ export const useAuthStore = create<IAuthStore>()(
         } catch (error) {
           console.log(error);
         } finally {
-          set({ session: null, jwt: null, user: null });
+          set({session: null, jwt: null, user: null, hydrated: true});
         }
       },
     })),
