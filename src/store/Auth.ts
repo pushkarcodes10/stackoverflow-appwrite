@@ -71,28 +71,32 @@ export const useAuthStore = create<IAuthStore>()(
           try {
             await account.deleteSession("current");
           } catch (error) {}
-          const session = await account.createEmailPasswordSession(email, password)
-          const [user, {jwt}] = await Promise.all([
+
+          await account.createEmailPasswordSession(email, password);
+
+          const [session, user, { jwt }] = await Promise.all([
+            account.getSession("current"),
             account.get<UserPrefs>(),
-            account.createJWT()
+            account.createJWT(),
+          ]);
 
-          ])
-          if (!user.prefs?.reputation) await account.updatePrefs<UserPrefs>({
-            reputation: 0
-          })
+          if (!user.prefs?.reputation) {
+            await account.updatePrefs<UserPrefs>({
+              reputation: 0,
+            });
+          }
 
-          set({session, user, jwt, hydrated: true})
-          
-          return { success: true}
+          const freshUser = await account.get<UserPrefs>();
 
+          set({ session, user: freshUser, jwt, hydrated: true });
+
+          return { success: true };
         } catch (error) {
-
-          console.log(error)
+          console.log(error);
           return {
             success: false,
-            error: error instanceof AppwriteException ? error: null,
-            
-          }
+            error: error instanceof AppwriteException ? error : null,
+          };
         }
       },
 

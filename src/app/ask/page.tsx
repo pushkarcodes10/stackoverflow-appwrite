@@ -22,7 +22,8 @@ export default function AskPage() {
     }
   }, [hydrated, isAuthenticated, router, verfiySession]);
 
-  if (!hydrated || !isAuthenticated) return null;
+  if (!hydrated) return null;
+  if (!isAuthenticated) return null;
 
   return (
     <div className="container mx-auto px-4 pb-12 pt-24 max-w-4xl">

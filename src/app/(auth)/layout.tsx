@@ -23,9 +23,8 @@ const Layout = ({children} : {children: React.ReactNode}) => {
         }
     }, [hydrated, isAuthenticated, router, verfiySession]);
 
-    if (!hydrated || isAuthenticated) {
-        return null;
-    }
+    if (!hydrated) return null;
+    if (isAuthenticated) return null;
 
     return (
         <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden py-12">
