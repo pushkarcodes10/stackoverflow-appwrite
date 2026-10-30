@@ -7,9 +7,12 @@ import { Models } from "node-appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-interface QuestionDoc extends Models.Document {
+export interface QuestionDoc extends Models.Document {
     authorId: string;
     title: string;
+    content: string;
+    tags: string[];
+    attachmentId?: string;
 }
 
 const EditQues = ({ question }: { question: QuestionDoc }) => {
@@ -20,7 +23,7 @@ const EditQues = ({ question }: { question: QuestionDoc }) => {
         if (question.authorId !== user?.$id) {
             router.push(`/questions/${question.$id}/${slugify(question.title)}`);
         }
-    }, []);
+    }, [question.$id, question.authorId, question.title, router, user?.$id]);
 
     if (user?.$id !== question.authorId) return null;
 
@@ -32,7 +35,7 @@ const EditQues = ({ question }: { question: QuestionDoc }) => {
                 <div className="flex flex-wrap md:flex-row-reverse">
                     <div className="w-full md:w-1/3"></div>
                     <div className="w-full md:w-2/3">
-                        <QuestionForm question={question as any} />
+                        <QuestionForm question={question} />
                     </div>
                 </div>
             </div>

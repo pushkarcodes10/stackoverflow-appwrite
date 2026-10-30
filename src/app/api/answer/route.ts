@@ -4,6 +4,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { ID } from "node-appwrite";
 import { UserPrefs } from "@/src/store/Auth";
 
+function getErrorDetails(error: unknown, fallbackMessage: string) {
+    if (error && typeof error === "object") {
+        const candidate = error as {
+            message?: string;
+            status?: number;
+            code?: number;
+        };
+
+        return {
+            message: typeof candidate.message === "string" && candidate.message.trim().length > 0 ? candidate.message : fallbackMessage,
+            status: typeof candidate.status === "number" ? candidate.status : typeof candidate.code === "number" ? candidate.code : 500,
+        };
+    }
+
+    return { message: fallbackMessage, status: 500 };
+}
+
 export async function POST(request: NextRequest) {
     try {
         const {questionId, answer, authorId} = await request.json();
@@ -25,15 +42,16 @@ export async function POST(request: NextRequest) {
             }
         )
         
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const { message, status } = getErrorDetails(error, "Error creating an answer");
         return NextResponse.json(
             {
-                error: error?.message || "Error Creating an answer"
-            }, 
+                error: message,
+            },
             {
-                status: error?.status || error?.code || 500
+                status,
             }
-        )
+        );
     }
 }
 
@@ -54,14 +72,15 @@ export async function DELETE(request: NextRequest) {
         {data: response},
         {status: 200}
     );
-    } catch (error: any) {
+    } catch (error: unknown) {
+       const { message, status } = getErrorDetails(error, "Error deleting the answer");
        return NextResponse.json(
         {
-          error: error?.message || "Error deleting the answer",
+          error: message,
         },
         {
-          status: error?.status || error?.code || 500
+          status,
         },
-       ); 
+       );
     }
 }

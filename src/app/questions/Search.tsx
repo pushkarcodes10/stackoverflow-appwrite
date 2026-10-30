@@ -8,11 +8,7 @@ const Search = () => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [search, setSearch] = React.useState(searchParams.get("search") || "");
-
-    React.useEffect(() => {
-        setSearch(() => searchParams.get("search") || "");
-    }, [searchParams]);
+    const [search, setSearch] = React.useState(searchParams.get("search") ?? "");
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

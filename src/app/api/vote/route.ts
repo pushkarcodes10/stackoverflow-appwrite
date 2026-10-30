@@ -4,6 +4,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { ID, Query } from "node-appwrite";
 import { UserPrefs } from "@/src/store/Auth";
 
+function getErrorDetails(error: unknown, fallbackMessage: string) {
+    if (error && typeof error === "object") {
+        const candidate = error as {
+            message?: string;
+            status?: number;
+            code?: number;
+        };
+
+        return {
+            message: typeof candidate.message === "string" && candidate.message.trim().length > 0 ? candidate.message : fallbackMessage,
+            status: typeof candidate.status === "number" ? candidate.status : typeof candidate.code === "number" ? candidate.code : 500,
+        };
+    }
+
+    return { message: fallbackMessage, status: 500 };
+}
+
 export async function POST(request: NextRequest) {
     try {
         const { votedById, voteStatus, type, typeId } = await request.json();
@@ -87,10 +104,11 @@ export async function POST(request: NextRequest) {
             message: "Vote recorded successfully",
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const { message, status } = getErrorDetails(error, "Error handling vote");
         return NextResponse.json(
-            { error: error?.message || "Error handling vote" },
-            { status: 500 }
+            { error: message },
+            { status }
         );
     }
 }
